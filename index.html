@@ -137,7 +137,7 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
   <div class="ctl">
     <label for="smooth">Suavizado de curvas <span id="smoothV">1.0</span></label>
     <input type="range" id="smooth" min="0.1" max="6" step="0.1" value="1">
-    <div class="hint">Más alto = menos nodos y formas más simples.</div>
+    <div class="hint">Más alto = curvas más suaves y simples (las esquinas se redondean un poco).</div>
   </div>
   <div class="ctl">
     <label for="noise">Ignorar manchas pequeñas <span id="noiseV">8 px</span></label>
@@ -157,7 +157,7 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
     </select>
   </div>
   <label class="check"><input type="checkbox" id="transp"><div>Quitar fondo<small>Elimina el color del borde de la imagen (ej. fondo blanco).</small></div></label>
-  <label class="check"><input type="checkbox" id="rightangle" checked><div>Esquinas rectas<small>Mantiene ángulos de 90° nítidos.</small></div></label>
+  <label class="check" id="rightangleRow"><input type="checkbox" id="rightangle" checked><div>Esquinas rectas<small>Mantiene ángulos de 90° nítidos.</small></div></label>
 
   <div class="laser">
     <div class="group-title">Corte láser / AutoCAD</div>
@@ -232,8 +232,109 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
 <script id="proc">
 /* Shared by the worker and the main-thread fallback.
    Traces the image, builds the SVG and the closed contours used for laser cutting. */
+
+/* ---------- B/W: sub-pixel contours (marching squares) for clean curves ---------- */
+function traceField(f, W, H, t){
+  var W2 = W + 2, nE = W2 * (H + 2) * 2;
+  var adjA = new Int32Array(nE).fill(-1), adjB = new Int32Array(nE).fill(-1);
+  var val = function(x, y){ return (x < 0 || y < 0 || x >= W || y >= H) ? 255 : f[y*W + x]; };
+  var hE = function(x, y){ return ((y+1)*W2 + (x+1))*2; }, vE = function(x, y){ return ((y+1)*W2 + (x+1))*2 + 1; };
+  var link = function(a, b){ if(adjA[a] < 0) adjA[a] = b; else adjB[a] = b; if(adjA[b] < 0) adjA[b] = a; else adjB[b] = a; };
+  for(var y = -1; y < H; y++){
+    for(var x = -1; x < W; x++){
+      var tl = val(x,y), tr = val(x+1,y), br = val(x+1,y+1), bl = val(x,y+1);
+      var c = (tl < t ? 8 : 0) | (tr < t ? 4 : 0) | (br < t ? 2 : 0) | (bl < t ? 1 : 0);
+      if(c === 0 || c === 15) continue;
+      var T = hE(x,y), R = vE(x+1,y), B = hE(x,y+1), L = vE(x,y);
+      switch(c){
+        case 1: case 14: link(L,B); break;
+        case 2: case 13: link(B,R); break;
+        case 3: case 12: link(L,R); break;
+        case 4: case 11: link(T,R); break;
+        case 6: case 9: link(T,B); break;
+        case 7: case 8: link(L,T); break;
+        case 5: if((tl+tr+br+bl)/4 < t){ link(L,T); link(B,R); } else { link(L,B); link(T,R); } break;
+        case 10: if((tl+tr+br+bl)/4 < t){ link(T,R); link(L,B); } else { link(L,T); link(B,R); } break;
+      }
+    }
+  }
+  var pt = function(id){
+    var dir = id & 1, k = id >> 1, yy = Math.floor(k / W2) - 1, xx = k % W2 - 1, v0, v1, u;
+    if(dir === 0){ v0 = val(xx,yy); v1 = val(xx+1,yy); u = (t - v0) / (v1 - v0); return [xx + u + 0.5, yy + 0.5]; }
+    v0 = val(xx,yy); v1 = val(xx,yy+1); u = (t - v0) / (v1 - v0); return [xx + 0.5, yy + u + 0.5];
+  };
+  var seen = new Uint8Array(nE), loops = [];
+  for(var e = 0; e < nE; e++){
+    if(adjA[e] < 0 || seen[e]) continue;
+    var loop = [], prev = -1, cur = e;
+    while(cur >= 0 && !seen[cur]){
+      seen[cur] = 1; var q = pt(cur); loop.push(q[0], q[1]);
+      var nx = adjA[cur] !== prev ? adjA[cur] : adjB[cur];
+      if(nx === prev) nx = adjB[cur];
+      prev = cur; cur = nx;
+    }
+    if(loop.length >= 8) loops.push(loop);
+  }
+  return loops;
+}
+function taubin(p, iters){            // smoothing without shrinking
+  var n = p.length / 2, a = new Float64Array(p), b = new Float64Array(p.length);
+  for(var it = 0; it < iters * 2; it++){
+    var k = (it % 2 === 0) ? 0.5 : -0.53;
+    for(var i = 0; i < n; i++){
+      var i0 = ((i - 1 + n) % n) * 2, i1 = i * 2, i2 = ((i + 1) % n) * 2;
+      b[i1]   = a[i1]   + k * ((a[i0]   + a[i2])   / 2 - a[i1]);
+      b[i1+1] = a[i1+1] + k * ((a[i0+1] + a[i2+1]) / 2 - a[i1+1]);
+    }
+    var tmp = a; a = b; b = tmp;
+  }
+  return Array.prototype.slice.call(a);
+}
+function rdp(p, tol){                  // simplify a closed loop
+  var n = p.length / 2; if(n < 4) return p;
+  var far = 0, fd = -1;
+  for(var i = 1; i < n; i++){ var d = (p[2*i]-p[0])*(p[2*i]-p[0]) + (p[2*i+1]-p[1])*(p[2*i+1]-p[1]); if(d > fd){ fd = d; far = i; } }
+  var keep = new Uint8Array(n); keep[0] = 1; keep[far] = 1;
+  var stack = [[0, far], [far, n]];
+  while(stack.length){
+    var sg = stack.pop(), s0 = sg[0], s1 = sg[1], j1 = s1 % n;
+    var ax = p[2*s0], ay = p[2*s0+1], bx = p[2*j1], by = p[2*j1+1], dx = bx-ax, dy = by-ay, len = Math.hypot(dx,dy) || 1e-9;
+    var md = -1, mi = -1;
+    for(var j = s0 + 1; j < s1; j++){ var dd = Math.abs(dy*p[2*j] - dx*p[2*j+1] + bx*ay - by*ax) / len; if(dd > md){ md = dd; mi = j; } }
+    if(md > tol){ keep[mi] = 1; stack.push([s0, mi], [mi, s1]); }
+  }
+  var out = []; for(var q = 0; q < n; q++) if(keep[q]) out.push(p[2*q], p[2*q+1]);
+  return out;
+}
+function processField(m){
+  var W = m.imgd.width, H = m.imgd.height, k = m.scale;
+  var loops = traceField(m.field, W, H, m.thresh);
+  var iters = Math.max(1, Math.round(m.smooth * 3));
+  var paths = [], minPer = m.noise;              // noise is in original pixels (perimeter)
+  for(var i = 0; i < loops.length; i++){
+    var L = rdp(taubin(loops[i], iters), 0.08);
+    var per = 0, nn = L.length / 2;
+    for(var j = 0; j < nn; j++){ var a = j*2, b = ((j+1)%nn)*2; per += Math.hypot(L[b]-L[a], L[b+1]-L[a+1]); }
+    if(per * k < minPer) continue;
+    for(var q = 0; q < L.length; q++) L[q] = Math.round(L[q] * k * 100) / 100;
+    paths.push(L);
+  }
+  var w = Math.round(W * k), h = Math.round(H * k);
+  var d = '';
+  for(var i2 = 0; i2 < paths.length; i2++){
+    var P = paths[i2]; d += 'M' + P[0] + ' ' + P[1];
+    for(var j2 = 2; j2 < P.length; j2 += 2) d += 'L' + P[j2] + ' ' + P[j2+1];
+    d += 'Z';
+  }
+  var svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" version="1.1" xmlns="http://www.w3.org/2000/svg">' +
+    (m.removeBg ? '' : '<rect width="' + w + '" height="' + h + '" fill="rgb(255,255,255)"/>') +
+    (d ? '<path fill="rgb(0,0,0)" fill-rule="evenodd" d="' + d + '"/>' : '') + '</svg>';
+  var pal = [{r:0,g:0,b:0}]; if(!m.removeBg) pal.push({r:255,g:255,b:255});
+  return {ok:true, svg:svg, palette:pal, paths:paths.length, cut: paths.length ? [{r:0,g:0,b:0,paths:paths}] : []};
+}
 function processTrace(m){
   try{
+    if(m.field) return processField(m);
     var td = ImageTracer.imagedataToTracedata(m.imgd, m.options);
     var pal = td.palette, bgIdx = -1, i, l, p, s;
     if(m.bg){
@@ -332,7 +433,7 @@ function applyPreset(name){
   preset = name; const p = PRESETS[name];
   $('colors').value = p.colors; $('smooth').value = p.smooth; $('noise').value = p.noise; $('blur').value = p.blur;
   document.querySelectorAll('.preset').forEach(b => b.classList.toggle('on', b.dataset.p === name));
-  $('threshCtl').hidden = name !== 'bw'; $('colorsCtl').hidden = name === 'bw';
+  $('threshCtl').hidden = name !== 'bw'; $('colorsCtl').hidden = name === 'bw'; $('rightangleRow').hidden = name === 'bw';
   syncLabels(); schedule(0);
 }
 
@@ -403,6 +504,7 @@ function run(){
   const c = readControls();
   const id = ++jobId;
   const data = new Uint8ClampedArray(work.imgd.data);
+  let bwField = null;
   if(preset === 'bw'){
     // luminance (transparent = white), optional blur BEFORE the threshold so edges come out smooth, then hard threshold
     const W = work.w, H = work.h, N = W*H;
@@ -425,16 +527,14 @@ function run(){
         for(let x = 0; x < W; x++){ for(let y = 0; y < H; y++) line[y] = lum[y*W + x]; blur1d(H); for(let y = 0; y < H; y++) lum[y*W + x] = out[y]; }
       }
     }
-    for(let i = 0, j = 0; j < N; i += 4, j++){
-      const v = lum[j] < c.thresh ? 0 : 255;
-      data[i] = data[i+1] = data[i+2] = v; data[i+3] = 255;
-    }
+    bwField = lum;
   }
   const msg = {id, imgd: {width: work.w, height: work.h, data},
-               options: buildOptions(c), removeBg: c.transp, bg: bgFor(c), scale: work.scale};
+               options: buildOptions(c), removeBg: c.transp, bg: bgFor(c), scale: work.scale,
+    field: bwField, thresh: c.thresh, smooth: c.smooth, noise: c.noise};
   setBusy(true); startT = performance.now();
   const w = newWorker();
-  if(w){ w.postMessage(msg, [msg.imgd.data.buffer]); }
+  if(w){ w.postMessage(msg, bwField ? [msg.imgd.data.buffer, bwField.buffer] : [msg.imgd.data.buffer]); }
   else {
     // fallback: main thread
     setTimeout(() => { const r = processTrace(msg); r.id = id; onResult({data:r}); }, 20);
