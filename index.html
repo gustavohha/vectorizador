@@ -5,96 +5,109 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vectorizador de imágenes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f5f2; --panel:#ffffff; --ink:#1d1d1f; --muted:#6b6b70; --line:#e4e2dc;
-  --accent:#3b5bdb; --accent-soft:#e8edff; --ok:#2b8a3e; --err:#c92a2a;
-  --check-a:#ffffff; --check-b:#ececec; --radius:12px;
-}
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#141416; --panel:#1d1d21; --ink:#ededf0; --muted:#9a9aa3; --line:#2e2e35;
-    --accent:#7b93ff; --accent-soft:#252b45; --check-a:#2a2a2f; --check-b:#232327; }
+  --purple:#3c0096; --pink:#fe0163; --teal:#01bab4;
+  --purple-soft:#f1ebfb; --pink-soft:#fff0f5; --teal-soft:#e8f8f7;
+  --bg:#ffffff; --panel:#ffffff; --ink:#1c1233; --muted:#6c6680; --line:#e9e5f0;
+  --accent:var(--purple); --accent-soft:var(--purple-soft);
+  --check-a:#ffffff; --check-b:#f1eff5; --radius:12px;
+  color-scheme: light;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0;height:100%}
 body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
-header{display:flex;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
-.logo{width:34px;height:34px;border-radius:9px;background:var(--accent);display:grid;place-items:center;flex:none}
-header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
-header p{margin:0;color:var(--muted);font-size:13px}
-.app{display:grid;grid-template-columns:300px 1fr;min-height:calc(100% - 71px)}
-aside{background:var(--panel);border-right:1px solid var(--line);padding:18px 18px 28px;display:flex;flex-direction:column;gap:18px}
+.brandbar{height:5px;background:linear-gradient(90deg,var(--purple) 0 55%,var(--pink) 55% 82%,var(--teal) 82% 100%)}
+header{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--line);background:#fff}
+.logo{width:40px;height:40px;border-radius:11px;background:var(--purple);display:grid;place-items:center;flex:none}
+header h1{font-family:Barlow,Inter,sans-serif;font-size:22px;margin:0;font-weight:700;letter-spacing:-.005em;color:var(--purple)}
+header h1 span{color:var(--pink)}
+header p{margin:1px 0 0;color:var(--muted);font-size:13px}
+.app{display:grid;grid-template-columns:310px 1fr;min-height:calc(100% - 78px)}
+aside{background:#fcfbfe;border-right:1px solid var(--line);padding:18px 18px 28px;display:flex;flex-direction:column;gap:18px}
 main{padding:20px 24px 28px;display:flex;flex-direction:column;gap:16px;min-width:0}
-.group-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.group-title{font-family:Barlow,Inter,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.group-title::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--teal)}
+.group-title.pink::before{background:var(--pink)}
 .presets{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.preset{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:9px;padding:9px 8px;font:inherit;font-size:12.5px;cursor:pointer;text-align:left;line-height:1.25}
+.preset{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 8px;font:inherit;font-size:12.5px;cursor:pointer;text-align:left;line-height:1.25;transition:.12s}
 .preset small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-.preset:hover{border-color:var(--accent)}
-.preset.on{background:var(--accent-soft);border-color:var(--accent)}
+.preset:hover{border-color:var(--purple)}
+.preset.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.preset.on small{color:#d9ccf5}
 .ctl{display:flex;flex-direction:column;gap:5px}
 .ctl label{display:flex;justify-content:space-between;font-weight:500;font-size:13px}
-.ctl label span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.ctl label span{color:var(--purple);font-weight:600;font-variant-numeric:tabular-nums}
 .ctl .hint{color:var(--muted);font-size:11.5px}
-input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--purple)}
 .check{display:flex;gap:9px;align-items:flex-start;font-size:13px;cursor:pointer}
-.check input{margin-top:2px;accent-color:var(--accent)}
+.check input{margin-top:2px;accent-color:var(--purple)}
 .check small{display:block;color:var(--muted);font-size:11.5px}
-select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
-.drop{border:2px dashed var(--line);border-radius:var(--radius);background:var(--panel);padding:34px 20px;text-align:center;cursor:pointer;transition:.15s}
-.drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+select{font:inherit;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.drop{border:2px dashed #d9d2e8;border-radius:var(--radius);background:#fff;padding:34px 20px;text-align:center;cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--teal);background:var(--teal-soft)}
 .drop b{display:block;font-size:15px;margin:10px 0 4px}
 .drop span{color:var(--muted);font-size:13px}
 .drop.compact{padding:12px 16px;display:flex;align-items:center;gap:12px;text-align:left}
 .drop.compact b{margin:0;font-size:13.5px;display:inline}
 .drop.compact svg{width:22px;height:22px}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.btn{font:inherit;font-weight:600;font-size:13px;border-radius:9px;padding:9px 14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.primary:hover{filter:brightness(1.08)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn{font:inherit;font-weight:600;font-size:13px;border-radius:9px;padding:9px 14px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.12s}
+.btn:hover{border-color:var(--purple);color:var(--purple)}
+.btn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}
+.btn.cut{background:var(--pink);color:#fff;border-color:var(--pink)}
+.btn.primary:hover,.btn.cut:hover{filter:brightness(1.1);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+.btn:disabled:hover{border-color:var(--line);color:inherit}
+.btn.primary:disabled:hover{border-color:var(--purple);color:#fff}
+.btn.cut:disabled:hover{border-color:var(--pink);color:#fff}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-left:auto}
-.seg button{font:inherit;font-size:12.5px;border:0;background:var(--panel);color:var(--muted);padding:8px 12px;cursor:pointer}
-.seg button.on{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.seg button{font:inherit;font-size:12.5px;border:0;background:#fff;color:var(--muted);padding:8px 12px;cursor:pointer}
+.seg button.on{background:var(--teal);color:#fff;font-weight:600}
 .stats{display:flex;flex-wrap:wrap;gap:8px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 11px;font-size:12px;color:var(--muted)}
+.stat{background:#fff;border:1px solid var(--line);border-radius:9px;padding:7px 11px;font-size:12px;color:var(--muted)}
 .stat b{color:var(--ink);font-variant-numeric:tabular-nums;margin-left:4px}
 .palette{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .sw{width:18px;height:18px;border-radius:5px;border:1px solid rgba(0,0,0,.15)}
 .panes{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:360px}
 .panes.single{grid-template-columns:1fr}
-.pane{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.pane-h{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600}
+.pane{background:#fff;border:1px solid var(--line);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.pane-h{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--purple)}
 .pane-h span{color:var(--muted);font-weight:400}
 .stage{flex:1;display:grid;place-items:center;padding:14px;min-height:300px;position:relative;
   background-color:var(--check-a);
   background-image:linear-gradient(45deg,var(--check-b) 25%,transparent 25%),linear-gradient(-45deg,var(--check-b) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--check-b) 75%),linear-gradient(-45deg,transparent 75%,var(--check-b) 75%);
   background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0}
-.stage.plain{background:var(--panel)}
+.stage.plain{background:#fff}
 .stage img{width:100%;height:auto;max-height:62vh;object-fit:contain;display:block}
 .stage svg{max-width:100%;max-height:62vh;display:block}
 .stage .svgwrap{width:100%;height:100%;display:grid;place-items:center}
 .stage .svgwrap svg{width:100%;height:auto;max-height:62vh}
-.stage.outline .svgwrap path{fill:none!important;stroke:var(--accent)!important;stroke-width:1px!important;vector-effect:non-scaling-stroke;opacity:1!important}
+.stage.outline .svgwrap rect{fill:none!important}
+.stage.outline .svgwrap path{fill:none!important;stroke:var(--pink)!important;stroke-width:1.2px!important;vector-effect:non-scaling-stroke;opacity:1!important}
 .empty{color:var(--muted);font-size:13px}
-.busy{position:absolute;inset:0;display:none;place-items:center;background:color-mix(in srgb,var(--panel) 65%,transparent);font-weight:600;font-size:13px}
+.busy{position:absolute;inset:0;display:none;place-items:center;background:rgba(255,255,255,.7);font-weight:600;font-size:13px;color:var(--purple)}
 .busy.on{display:grid}
-.spin{width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 8px}
+.spin{width:22px;height:22px;border:3px solid var(--purple-soft);border-top-color:var(--pink);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 8px}
 @keyframes s{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transition:.2s;pointer-events:none;z-index:9}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--purple);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;opacity:0;transition:.2s;pointer-events:none;z-index:9}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-.laser{display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--line);padding-top:16px}
+.size{display:flex;flex-direction:column;gap:9px;background:var(--pink-soft);border:1px solid #ffd1e1;border-radius:var(--radius);padding:14px}
 .mmrow{display:flex;align-items:center;gap:8px}
-.mmrow input{width:100px;font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.mmrow input{width:100px;font:inherit;font-weight:600;padding:7px 9px;border-radius:8px;border:1px solid #ffc2d7;background:#fff;color:var(--ink)}
+.mmrow input:focus{outline:2px solid var(--pink);outline-offset:-1px}
 .mmrow span{color:var(--muted);font-size:12.5px}
-.hint.warn{color:#b35c00}
+.size .ctl label span{color:var(--pink)}
+#cutInfo{color:var(--ink);font-weight:500}
+.hint.warn{color:#b3003f}
 .btn.full{width:100%;justify-content:center}
 .tips{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:auto}
 .tips ul{margin:6px 0 0;padding-left:16px}
 .tips li{margin-bottom:4px}
-.code{display:none;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:var(--muted)}
+.tips li::marker{color:var(--teal)}
+.code{display:none;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:var(--muted)}
 .code.on{display:block}
 @media (max-width:860px){
   .app{grid-template-columns:1fr}
@@ -105,11 +118,12 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
 </style>
 </head>
 <body>
+<div class="brandbar"></div>
 <header>
-  <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 L10 6 L14 14 L20 4"/><circle cx="4" cy="20" r="1.6" fill="#fff"/><circle cx="10" cy="6" r="1.6" fill="#fff"/><circle cx="14" cy="14" r="1.6" fill="#fff"/><circle cx="20" cy="4" r="1.6" fill="#fff"/></svg></div>
+  <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 L10 6 L14 14 L20 4" stroke="#fff" stroke-width="2.2"/><circle cx="4" cy="20" r="1.8" fill="#01bab4"/><circle cx="10" cy="6" r="1.8" fill="#fff"/><circle cx="14" cy="14" r="1.8" fill="#fff"/><circle cx="20" cy="4" r="1.8" fill="#fe0163"/></svg></div>
   <div>
-    <h1>Vectorizador de imágenes</h1>
-    <p>Sube un PNG o JPG simple (logo, ícono, dibujo) y conviértelo a SVG. Todo ocurre en tu navegador.</p>
+    <h1>Vectorizador <span>para corte láser</span></h1>
+    <p>Convierte un PNG o JPG en contornos DXF para AutoCAD o en SVG. Todo ocurre en tu navegador.</p>
   </div>
 </header>
 
@@ -118,13 +132,24 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
   <div>
     <div class="group-title">Tipo de imagen</div>
     <div class="presets" id="presets">
-      <button class="preset on" data-p="logo">Logo / ícono<small>Pocos colores planos</small></button>
-      <button class="preset" data-p="bw">Blanco y negro<small>Firmas, siluetas</small></button>
+      <button class="preset" data-p="logo">Logo / ícono<small>Pocos colores planos</small></button>
+      <button class="preset on" data-p="bw">Blanco y negro<small>Siluetas para cortar</small></button>
       <button class="preset" data-p="illus">Ilustración<small>Más colores, curvas</small></button>
       <button class="preset" data-p="detail">Detallado<small>Más fiel, más pesado</small></button>
     </div>
   </div>
 
+  <div class="size">
+    <div class="group-title pink">Tamaño de la pieza</div>
+    <div class="ctl">
+      <label for="mmw">Ancho final <span id="mmh">–</span></label>
+      <div class="mmrow"><input type="number" id="mmw" min="1" max="5000" step="1" value="100"><span>mm de ancho</span></div>
+      <div class="hint" id="cutInfo">Sube una imagen para ver los contornos.</div>
+      <div class="hint warn" id="cutWarn" hidden>Hay varios colores: cada uno va en su propia capa. Para cortar siluetas usa “Blanco y negro”.</div>
+    </div>
+  </div>
+
+  <div class="group-title">Ajustes</div>
   <div class="ctl" id="threshCtl" hidden>
     <label for="thresh">Umbral claro / oscuro <span id="threshV">128</span></label>
     <input type="range" id="thresh" min="10" max="245" step="1" value="128">
@@ -159,23 +184,12 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
   <label class="check"><input type="checkbox" id="transp"><div>Quitar fondo<small>Elimina el color del borde de la imagen (ej. fondo blanco).</small></div></label>
   <label class="check" id="rightangleRow"><input type="checkbox" id="rightangle" checked><div>Esquinas rectas<small>Mantiene ángulos de 90° nítidos.</small></div></label>
 
-  <div class="laser">
-    <div class="group-title">Corte láser / AutoCAD</div>
-    <div class="ctl">
-      <label for="mmw">Ancho final de la pieza <span id="mmh">–</span></label>
-      <div class="mmrow"><input type="number" id="mmw" min="1" max="5000" step="1" value="100"><span>mm de ancho</span></div>
-      <div class="hint" id="cutInfo">Sube una imagen para ver los contornos.</div>
-      <div class="hint warn" id="cutWarn" hidden>Hay varios colores: cada uno va en su propia capa. Para cortar siluetas usa “Blanco y negro”.</div>
-    </div>
-    <button class="btn primary full" id="dxf" disabled>Descargar DXF para AutoCAD</button>
-    <button class="btn full" id="cutsvg" disabled>SVG de contornos en mm</button>
-  </div>
   <div class="tips">
     <b style="color:var(--ink)">Consejos</b>
     <ul>
       <li>Funciona mejor con imágenes de colores planos y bordes definidos.</li>
       <li>Si salen “escalones”, sube el suavizado o el desenfoque.</li>
-      <li>Si aparecen colores raros en los bordes, baja el número de colores.</li>
+      <li>Para cortar, usa “Blanco y negro” y revisa la vista “Contornos”.</li>
       <li>También puedes pegar una imagen con Ctrl+V.</li>
       <li>Corte: las letras con huecos (O, A, B) sueltan el centro; si es un esténcil, agrega puentes en AutoCAD.</li>
     </ul>
@@ -190,8 +204,10 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
   <input type="file" id="file" accept="image/*" hidden>
 
   <div class="toolbar">
-    <button class="btn primary" id="dl" disabled><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Descargar SVG</button>
-    <button class="btn" id="copy" disabled>Copiar código SVG</button>
+    <button class="btn cut" id="dxf" disabled><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Descargar DXF (AutoCAD)</button>
+    <button class="btn" id="cutsvg" disabled>SVG de contornos (mm)</button>
+    <button class="btn" id="dl" disabled>SVG con relleno</button>
+    <button class="btn" id="copy" disabled>Copiar SVG</button>
     <button class="btn" id="showcode" disabled>Ver código</button>
     <div class="seg" id="view">
       <button data-v="split" class="on">Lado a lado</button>
@@ -216,7 +232,7 @@ select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--lin
       <div class="stage" id="stageOrig"><div class="empty">Aún no hay imagen</div></div>
     </div>
     <div class="pane">
-      <div class="pane-h">Vectorizado (SVG) <span>escala sin perder calidad</span></div>
+      <div class="pane-h">Vectorizado <span>en “Contornos” ves lo que corta el láser</span></div>
       <div class="stage" id="stageSvg"><div class="empty">El resultado aparecerá aquí</div>
         <div class="busy" id="busy"><div><div class="spin"></div>Vectorizando…</div></div>
       </div>
@@ -386,7 +402,7 @@ const PRESETS = {
   illus:  {colors:16, smooth:1.5, noise:12, blur:1},
   detail: {colors:24, smooth:0.5, noise:2,  blur:0}
 };
-let preset = 'logo';
+let preset = 'bw';
 let src = null;           // {img, url, name, w, h}
 let work = null;          // {imgd, w, h, scale, bg}
 let svgText = '';
@@ -737,7 +753,7 @@ $('view').addEventListener('click', e => {
   $('stageSvg').classList.toggle('outline', v === 'outline');
   $('stageSvg').classList.toggle('plain', v === 'outline');
 });
-syncLabels();
+applyPreset('bw');
 })();
 </script>
 </body>
