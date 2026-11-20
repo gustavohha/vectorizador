@@ -20,6 +20,70 @@
 html,body{margin:0;height:100%}
 body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
 
+
+/* ---------- send to MakerLab ---------- */
+.send{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:linear-gradient(100deg,var(--purple-soft),var(--pink-soft));border:1px solid #ecdcf2;border-radius:16px;padding:18px 22px}
+.send .txt{flex:1;min-width:220px}
+.send b{font-family:Barlow,Inter,sans-serif;font-size:19px;color:var(--purple);display:block}
+.send p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+.btn.big{font-size:15.5px;padding:13px 22px;border-radius:999px}
+.modal{position:fixed;inset:0;background:rgba(28,18,51,.45);display:grid;place-items:center;padding:16px;z-index:20;overflow:auto}
+.mcard{background:#fff;border-radius:18px;width:min(520px,100%);padding:22px 22px 18px;box-shadow:0 20px 60px rgba(28,18,51,.25);max-height:calc(100vh - 32px);overflow:auto}
+.mcard h2{font-family:Barlow,Inter,sans-serif;font-size:23px;margin:0 0 4px;color:var(--purple)}
+.mcard .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.msum{display:flex;gap:14px;align-items:center;background:#faf8fd;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:14px}
+.msum img{width:84px;height:84px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid var(--line);flex:none}
+.msum div{font-size:13px;color:var(--muted);line-height:1.55}
+.msum div b{color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field>span{font-size:13px;font-weight:600}
+.field input[type=text],.field input[type=email],.field textarea{font:inherit;font-size:14px;padding:9px 11px;border:1px solid #ddd5ea;border-radius:9px;background:#fff;color:var(--ink);width:100%}
+.field textarea{min-height:70px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:2px solid var(--purple);outline-offset:-1px}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice label{border:1px solid #ddd5ea;border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13.5px;display:flex;gap:8px;align-items:flex-start}
+.choice label small{display:block;color:var(--muted);font-size:11.5px}
+.choice input{accent-color:var(--pink);margin-top:3px}
+.choice label:has(input:checked){border-color:var(--pink);background:var(--pink-soft)}
+.mact{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.merr{color:#b3003f;font-size:13px;margin:4px 0 0;min-height:18px}
+.done{text-align:center;padding:10px 4px 6px}
+.done .code{display:inline-block;font-family:Barlow,Inter,sans-serif;font-weight:700;font-size:30px;letter-spacing:.04em;color:var(--pink);background:var(--pink-soft);border-radius:12px;padding:6px 18px;margin:10px 0}
+.done p{color:var(--muted);font-size:14px;margin:6px 0}
+.ok-ico{width:56px;height:56px;border-radius:50%;background:var(--teal);display:grid;place-items:center;margin:0 auto 8px}
+.wfoot{margin-top:26px;font-size:12px}
+.wfoot a{color:var(--muted)}
+/* ---------- helpers panel ---------- */
+#adminView{min-height:100vh;background:#fcfbfe}
+.adm{max-width:1200px;margin:0 auto;padding:22px 24px 40px}
+.admbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--muted)}
+.chip.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.chip .c{font-weight:700;margin-left:4px}
+.login{max-width:360px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center}
+.login h2{font-family:Barlow,Inter,sans-serif;color:var(--purple);margin:0 0 6px}
+.login input{font:inherit;font-size:22px;letter-spacing:.3em;text-align:center;width:100%;padding:10px;border:1px solid #ddd5ea;border-radius:10px;margin:12px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.dcard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.dcard .pv{height:170px;background:#fff;border-bottom:1px solid var(--line);display:grid;place-items:center}
+.dcard .pv img{max-width:92%;max-height:150px}
+.dcard .bd{padding:12px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.dcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dcard .id{font-family:Barlow,Inter,sans-serif;font-weight:700;color:var(--purple);font-size:17px}
+.dcard .dt{color:var(--muted);font-size:12px}
+.dcard .who{font-weight:600}
+.dcard .mail{font-size:12.5px;color:var(--muted);word-break:break-all}
+.dcard .meta{font-size:12.5px;color:var(--muted)}
+.dcard .cm{font-size:13px;background:#faf8fd;border-radius:8px;padding:7px 9px;white-space:pre-wrap}
+.tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;color:#fff}
+.tag.Corte{background:var(--pink)} .tag.Grabado{background:var(--teal)}
+.dcard .ft{display:flex;gap:6px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.dcard select{font:inherit;font-size:12.5px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);margin-right:auto}
+.st-Pendiente{border-left:4px solid var(--pink)} .st-En-proceso{border-left:4px solid #f0a500}
+.st-Listo{border-left:4px solid var(--teal)} .st-Entregado{border-left:4px solid #b9b4c6;opacity:.75}
+.empty-list{text-align:center;color:var(--muted);padding:50px 0}
+
 /* ---------- welcome screen ---------- */
 #welcome{min-height:calc(100vh - 5px);display:flex;justify-content:center;padding:36px 20px 48px;background:
   radial-gradient(900px 400px at 15% -10%,var(--purple-soft),transparent 70%),
@@ -158,11 +222,12 @@ select{font:inherit;padding:7px 8px;border-radius:8px;border:1px solid var(--lin
       <li class="step"><div class="n">2</div><b>Elige el tipo</b><p>Para cortar, deja <i>Blanco y negro</i> (ya viene marcado). Si tu imagen tiene varios colores, prueba <i>Logo / ícono</i>.</p></li>
       <li class="step"><div class="n">3</div><b>Ajusta a tu gusto</b><p>Mueve el <i>umbral</i> para decidir qué queda negro y sube el <i>suavizado</i> si ves bordes con escalones.</p></li>
       <li class="step"><div class="n">4</div><b>Revisa los contornos</b><p>Toca <i>Contornos</i>: esas líneas rosadas son justo el camino que hará el láser.</p></li>
-      <li class="step"><div class="n">5</div><b>Elige el tamaño y descarga</b><p>Escribe el ancho en milímetros, presiona <i>Descargar DXF</i>, ábrelo en AutoCAD… ¡y a cortar! ✂️</p></li>
+      <li class="step"><div class="n">5</div><b>Elige el tamaño y envíalo</b><p>Escribe el ancho en milímetros y presiona <i>Enviar al MakerLab</i>. ¡Un ayudante lo preparará para la láser! ✂️</p></li>
     </ol>
     <div class="wnote"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Tranqui: tu imagen no se sube a ningún servidor, todo ocurre en tu navegador.</div>
     <button class="go" id="start">Comenzar <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     <div class="wdrop">También puedes arrastrar tu imagen aquí mismo para empezar.</div>
+    <div class="wfoot"><a href="#ayudante">Acceso ayudantes</a></div>
   </div>
 </section>
 
@@ -287,9 +352,67 @@ select{font:inherit;padding:7px 8px;border-radius:8px;border:1px solid var(--lin
       </div>
     </div>
   </div>
+
+  <section class="send" id="sendBox">
+    <div class="txt"><b>¿Quedó como querías?</b><p>Envía tu diseño al MakerLab y un ayudante lo preparará para la cortadora láser.</p></div>
+    <button class="btn cut big" id="openSend" disabled><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Enviar al MakerLab</button>
+  </section>
 </main>
 </div>
 </div><!-- /appView -->
+<div class="modal" id="sendModal" hidden>
+  <form class="mcard" id="sendForm" novalidate>
+    <div id="sendStep">
+      <h2>Enviar diseño al MakerLab</h2>
+      <p class="sub">Un ayudante revisará tu archivo y te escribirá cuando esté listo.</p>
+      <div class="msum"><img id="sumImg" alt="Vista previa del diseño"><div id="sumTxt"></div></div>
+      <label class="field"><span>Nombre *</span><input type="text" id="fNombre" maxlength="80" autocomplete="name" required></label>
+      <label class="field"><span>Correo *</span><input type="email" id="fCorreo" maxlength="120" autocomplete="email" placeholder="tu.correo@alumnos.ucn.cl" required></label>
+      <div class="field"><span>¿Qué quieres hacer? *</span>
+        <div class="choice">
+          <label><input type="radio" name="tipo" value="corte" checked><div>Corte<small>La láser recorta la figura</small></div></label>
+          <label><input type="radio" name="tipo" value="grabado"><div>Grabado<small>La láser marca la superficie</small></div></label>
+        </div>
+      </div>
+      <label class="field"><span>Comentario</span><textarea id="fComent" maxlength="500" placeholder="Material, espesor, cantidad de piezas, fecha en que lo necesitas…"></textarea></label>
+      <p class="merr" id="sendErr"></p>
+      <div class="mact"><button type="button" class="btn" id="cancelSend">Cancelar</button><button type="submit" class="btn cut" id="doSend">Enviar diseño</button></div>
+    </div>
+    <div id="doneStep" class="done" hidden>
+      <div class="ok-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div>
+      <h2>¡Diseño enviado!</h2>
+      <p>Tu código de pedido es</p>
+      <div class="code" id="doneCode">MK-0000</div>
+      <p>Guárdalo para preguntar por tu pieza. Te escribiremos al correo cuando esté lista.</p>
+      <div class="mact" style="justify-content:center;margin-top:14px"><button type="button" class="btn primary" id="closeDone">Listo</button></div>
+    </div>
+  </form>
+</div>
+
+<section id="adminView" hidden>
+  <header>
+    <img class="hlogo" id="alogo" alt="Maker Ingenierías UCN">
+    <div><h1>Panel de <span>ayudantes</span></h1><p>Diseños enviados por los usuarios del vectorizador.</p></div>
+    <button class="help" id="adminBack">Ir al vectorizador</button>
+  </header>
+  <div class="adm">
+    <form class="login" id="loginBox">
+      <h2>Acceso ayudantes</h2>
+      <p class="sub" style="color:var(--muted);font-size:13px;margin:0">Ingresa el PIN del laboratorio.</p>
+      <input type="password" id="pinIn" inputmode="numeric" autocomplete="off" maxlength="12" aria-label="PIN">
+      <button class="btn primary full" type="submit">Entrar</button>
+      <p class="merr" id="loginErr"></p>
+    </form>
+    <div id="listBox" hidden>
+      <div class="admbar">
+        <div class="chips" id="chips"></div>
+        <button class="btn" id="refresh" style="margin-left:auto">Actualizar</button>
+        <button class="btn" id="logout">Salir</button>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </div>
+</section>
 <div class="toast" id="toast"></div>
 <script id="lib">
 /* imagetracer.js 1.2.6 by András Jankovics — public domain (The Unlicense) */
@@ -634,6 +757,7 @@ function onResult(e){
   m.palette.slice(0, 24).forEach(c => { const s = document.createElement('span'); s.className = 'sw';
     s.style.background = 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')'; s.title = 'rgb(' + c.r + ', ' + c.g + ', ' + c.b + ')'; pal.appendChild(s); });
   ['dl','copy','showcode','dxf','cutsvg'].forEach(id => $(id).disabled = false);
+  $('openSend').disabled = !cutData.length;
   if($('code').classList.contains('on')) $('code').textContent = svgText;
 }
 
@@ -811,6 +935,133 @@ function showWelcome(){ $('appView').hidden = true; $('welcome').hidden = false;
 $('hlogo').src = $('wlogo').src;
 $('start').addEventListener('click', showApp);
 $('help').addEventListener('click', showWelcome);
+
+/* ---------- MakerLab queue (Google Apps Script backend) ---------- */
+const MAKERLAB_API = 'https://script.google.com/macros/s/AKfycbwdHFqSHesY2LketpQ2kkB0CWtu6U6dxcXhGgVWdf0qXtfAkULbmt6m9kfBxS-Xl7pm/exec';   // URL de la aplicación web de Google Apps Script
+async function api(body){
+  if(!MAKERLAB_API) throw new Error('El envío todavía no está configurado.');
+  const r = await fetch(MAKERLAB_API, {method:'POST', body: JSON.stringify(body)});
+  let j; try { j = await r.json(); } catch(e) { throw new Error('No se pudo conectar con el MakerLab.'); }
+  if(!j.ok) throw new Error(j.error || 'Error desconocido');
+  return j;
+}
+function cutStats(){
+  const k = mmPerPx(); let n = 0, L = 0;
+  cutData.forEach(layer => layer.paths.forEach(pts => { n++; L += pathLen(pts); }));
+  return {w: src.w*k, h: src.h*k, n, m: L*k/1000};
+}
+function previewPNG(size){
+  const c = document.createElement('canvas'), sc = size / Math.max(src.w, src.h);
+  c.width = Math.max(1, Math.round(src.w*sc)); c.height = Math.max(1, Math.round(src.h*sc));
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0,0,c.width,c.height);
+  const p = new Path2D();
+  cutData.forEach(layer => layer.paths.forEach(pts => { p.moveTo(pts[0]*sc, pts[1]*sc); for(let i=2;i<pts.length;i+=2) p.lineTo(pts[i]*sc, pts[i+1]*sc); p.closePath(); }));
+  g.fillStyle = '#1c1233'; g.fill(p, 'evenodd');
+  g.strokeStyle = '#fe0163'; g.lineWidth = 1; g.stroke(p);
+  return c.toDataURL('image/png');
+}
+function openSend(){
+  if(!cutData.length){ toast('Primero sube y ajusta una imagen'); return; }
+  const st = cutStats();
+  $('sumImg').src = previewPNG(200);
+  $('sumTxt').innerHTML = '<b>' + st.w.toFixed(1) + ' × ' + st.h.toFixed(1) + ' mm</b><br>' + st.n + ' contornos · ' + st.m.toFixed(2) + ' m de recorrido' +
+    '<br><span style="font-size:12px">¿Otro tamaño? Cámbialo en “Tamaño de la pieza”.</span>';
+  $('sendErr').textContent = ''; $('sendStep').hidden = false; $('doneStep').hidden = true;
+  $('sendModal').hidden = false; setTimeout(() => $('fNombre').focus(), 50);
+}
+function closeSend(){ $('sendModal').hidden = true; }
+$('openSend').addEventListener('click', openSend);
+['fNombre','fCorreo'].forEach(id => $(id).addEventListener('input', () => { $('sendErr').textContent = ''; }));
+$('cancelSend').addEventListener('click', closeSend);
+$('closeDone').addEventListener('click', closeSend);
+$('sendModal').addEventListener('click', e => { if(e.target === $('sendModal')) closeSend(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && !$('sendModal').hidden) closeSend(); });
+$('sendForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const nombre = $('fNombre').value.trim(), correo = $('fCorreo').value.trim();
+  const tipo = (document.querySelector('input[name=tipo]:checked') || {}).value || 'corte';
+  if(!nombre){ $('sendErr').textContent = 'Escribe tu nombre.'; $('fNombre').focus(); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)){ $('sendErr').textContent = 'Revisa tu correo.'; $('fCorreo').focus(); return; }
+  const st = cutStats(), btn = $('doSend');
+  btn.disabled = true; btn.textContent = 'Enviando…'; $('sendErr').textContent = '';
+  try{
+    let preview = previewPNG(240); if(preview.length > 45000) preview = previewPNG(150);
+    const r = await api({action:'submit', nombre, correo, tipo, comentario: $('fComent').value.trim(),
+      anchoMm: st.w, altoMm: st.h, contornos: st.n, largoM: st.m, dxf: buildDXF(), svg: buildCutSVG(), preview});
+    $('doneCode').textContent = r.id; $('sendStep').hidden = true; $('doneStep').hidden = false;
+    try { localStorage.setItem('mk_nombre', nombre); localStorage.setItem('mk_correo', correo); } catch(e) {}
+    $('fComent').value = '';
+  }catch(err){ $('sendErr').textContent = err.message; }
+  finally{ btn.disabled = false; btn.textContent = 'Enviar diseño'; }
+});
+try { $('fNombre').value = localStorage.getItem('mk_nombre') || ''; $('fCorreo').value = localStorage.getItem('mk_correo') || ''; } catch(e) {}
+
+/* ---------- helpers panel ---------- */
+let adminPin = '', adminItems = [], adminFilter = 'Pendiente';
+const ESTADOS = ['Pendiente','En proceso','Listo','Entregado'];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fmtDate(iso){ const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('es-CL', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}); }
+function renderAdmin(){
+  const counts = {Todos: adminItems.length}; ESTADOS.forEach(s => counts[s] = adminItems.filter(i => i.estado === s).length);
+  $('chips').innerHTML = ['Pendiente','En proceso','Listo','Entregado','Todos'].map(s =>
+    '<button class="chip' + (s === adminFilter ? ' on' : '') + '" data-f="' + s + '">' + s + '<span class="c">' + counts[s] + '</span></button>').join('');
+  const list = adminItems.filter(i => adminFilter === 'Todos' || i.estado === adminFilter);
+  $('cards').innerHTML = list.length ? list.map(i =>
+    '<article class="dcard st-' + esc(i.estado).replace(' ', '-') + '">' +
+      '<div class="pv">' + (i.preview ? '<img src="' + esc(i.preview) + '" alt="">' : '<span class="empty">Sin vista previa</span>') + '</div>' +
+      '<div class="bd"><div class="top"><span class="id">' + esc(i.id) + '</span><span class="tag ' + esc(i.tipo) + '">' + esc(i.tipo) + '</span></div>' +
+      '<div class="dt">' + esc(fmtDate(i.fecha)) + '</div>' +
+      '<div class="who">' + esc(i.nombre) + '</div><a class="mail" href="mailto:' + esc(i.correo) + '">' + esc(i.correo) + '</a>' +
+      '<div class="meta">' + (i.anchoMm ? esc(i.anchoMm) + ' × ' + esc(i.altoMm) + ' mm · ' : '') + esc(i.contornos) + ' contornos · ' + esc(i.largoM) + ' m</div>' +
+      (i.comentario ? '<div class="cm">' + esc(i.comentario) + '</div>' : '') + '</div>' +
+      '<div class="ft"><select data-id="' + esc(i.id) + '">' + ESTADOS.map(s => '<option' + (s === i.estado ? ' selected' : '') + '>' + s + '</option>').join('') + '</select>' +
+      '<button class="btn cut" data-dl="dxf" data-id="' + esc(i.id) + '">DXF</button>' + (i.tieneSvg ? '<button class="btn" data-dl="svg" data-id="' + esc(i.id) + '">SVG</button>' : '') + '</div>' +
+    '</article>').join('') : '<div class="empty-list">No hay diseños en “' + esc(adminFilter) + '”.</div>';
+}
+async function loadAdmin(){
+  $('cards').innerHTML = '<div class="empty-list">Cargando…</div>';
+  try { const r = await api({action:'list', pin: adminPin}); adminItems = r.items || []; renderAdmin(); }
+  catch(err){ if(/PIN/.test(err.message)){ logoutAdmin(); $('loginErr').textContent = err.message; } else $('cards').innerHTML = '<div class="empty-list">' + esc(err.message) + '</div>'; }
+}
+function logoutAdmin(){ adminPin = ''; try { sessionStorage.removeItem('mk_pin'); } catch(e) {} $('listBox').hidden = true; $('loginBox').hidden = false; $('pinIn').value = ''; }
+$('loginBox').addEventListener('submit', async e => {
+  e.preventDefault(); $('loginErr').textContent = '';
+  adminPin = $('pinIn').value.trim(); if(!adminPin) return;
+  try { const r = await api({action:'list', pin: adminPin}); adminItems = r.items || [];
+    try { sessionStorage.setItem('mk_pin', adminPin); } catch(e) {}
+    $('loginBox').hidden = true; $('listBox').hidden = false; renderAdmin();
+  } catch(err){ $('loginErr').textContent = err.message; adminPin = ''; }
+});
+$('refresh').addEventListener('click', loadAdmin);
+$('logout').addEventListener('click', logoutAdmin);
+$('chips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if(b){ adminFilter = b.dataset.f; renderAdmin(); } });
+$('cards').addEventListener('change', async e => {
+  const sel = e.target.closest('select[data-id]'); if(!sel) return;
+  const it = adminItems.find(i => i.id === sel.dataset.id), prev = it.estado;
+  it.estado = sel.value; renderAdmin();
+  try { await api({action:'status', pin: adminPin, id: it.id, estado: it.estado}); toast(it.id + ': ' + it.estado); }
+  catch(err){ it.estado = prev; renderAdmin(); toast('No se pudo cambiar: ' + err.message); }
+});
+$('cards').addEventListener('click', async e => {
+  const b = e.target.closest('[data-dl]'); if(!b) return;
+  b.disabled = true;
+  try { const r = await api({action:'file', pin: adminPin, id: b.dataset.id, kind: b.dataset.dl});
+    await saveFile(r.name, r.content, b.dataset.dl === 'svg' ? 'image/svg+xml' : 'application/dxf'); }
+  catch(err){ toast('No se pudo descargar: ' + err.message); }
+  finally{ b.disabled = false; }
+});
+function route(){
+  const admin = location.hash === '#ayudante';
+  $('adminView').hidden = !admin;
+  if(admin){ $('welcome').hidden = true; $('appView').hidden = true; window.scrollTo(0,0);
+    if(!adminPin){ try { adminPin = sessionStorage.getItem('mk_pin') || ''; } catch(e) {} }
+    if(adminPin){ $('loginBox').hidden = true; $('listBox').hidden = false; loadAdmin(); } else setTimeout(() => $('pinIn').focus(), 50);
+  } else if($('appView').hidden && $('welcome').hidden){ $('welcome').hidden = false; }
+}
+$('adminBack').addEventListener('click', () => { history.replaceState(null, '', location.pathname + location.search); $('adminView').hidden = true; showApp(); });
+window.addEventListener('hashchange', route);
+$('alogo').src = $('wlogo').src;
+route();
 applyPreset('bw');
 })();
 </script>
